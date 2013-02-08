@@ -1,6 +1,4 @@
-<?php
-
-// namespace Sixpack\Response;
+<?php namespace Seatgeek\Sixpack;
 
 class Response {
 

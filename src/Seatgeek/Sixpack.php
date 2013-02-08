@@ -1,8 +1,6 @@
-<?php
+<?php namespace Seatgeek;
 
-//namespace Sixpack;
-
-//use Sixpack\Response;
+use Seatgeek\Sixpack\Response;
 
 /**
  * TODO
