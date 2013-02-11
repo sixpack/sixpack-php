@@ -1,6 +1,6 @@
 {
     "name": "seatgeek/sixpack-php",
-    "description": "Stuff.",
+    "description": "Sixpack A/B testing framework client",
     "keywords": ["api"],
     "authors": [
         {

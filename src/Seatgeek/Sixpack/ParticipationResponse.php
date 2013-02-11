@@ -19,7 +19,6 @@ class ParticipationResponse extends Response
         return $this->response->experiment;
     }
 
-    // TODO, uhh. This isn't quite right.
     public function getAlternative()
     {
         if (!$this->getSuccess()) {
