@@ -24,6 +24,6 @@ class ParticipationResponse extends Response
         if (!$this->getSuccess()) {
             return $this->control;
         }
-        return $this->response->alternative;
+        return $this->response->alternative->name;
     }
 }
