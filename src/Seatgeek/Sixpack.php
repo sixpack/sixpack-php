@@ -11,8 +11,7 @@ use Seatgeek\Sixpack\Response;
 class Sixpack
 {
     // configuration
-    private $host = 'http://localhost';
-    private $port = 8000;
+    private $base_url = 'http://localhost:5000';
     private $cookiePrefix = 'sixpack';
     private $autoForce = true;
 
@@ -176,14 +175,7 @@ class Sixpack
 
         $this->validateRequest();
 
-        // TODO
-        // this is also going to go away.
-        // composer, requests dependancy.
-        $url = $this->host;
-        if ($this->port !== null) {
-            $url .= ':' . $this->port;
-        }
-        $url .= '/' . $endpoint;
+        $url = $this->base_url . '/' . $endpoint;
 
         $params = preg_replace('/%5B(?:[0-9]+)%5D=/', '=', http_build_query($this->queryParams));
         $url .= '?' . $params;
