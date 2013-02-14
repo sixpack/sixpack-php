@@ -1,7 +1,8 @@
 {
     "name": "seatgeek/sixpack-php",
     "description": "Sixpack A/B testing framework client",
-    "keywords": ["api"],
+    "keywords": ["api", "sixpack"],
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Zack Kitzmiller",
