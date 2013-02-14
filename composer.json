@@ -16,5 +16,5 @@
             "Seatgeek": "src/"
         }
     },
-    "minimum-stability": "0.2.0"
+    "minimum-stability": "dev"
 }
