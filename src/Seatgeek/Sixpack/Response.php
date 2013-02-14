@@ -1,4 +1,7 @@
-<?php namespace Seatgeek\Sixpack;
+<?php
+
+include 'Sixpack/ConversionResponse.php';
+include 'Sixpack/ParticipationResponse.php';
 
 class Response {
 

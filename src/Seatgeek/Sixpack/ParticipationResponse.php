@@ -1,4 +1,4 @@
-<?php namespace Seatgeek\Sixpack;
+<?php
 
 class ParticipationResponse extends Response
 {

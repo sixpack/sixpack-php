@@ -1,12 +1,6 @@
-<?php namespace Seatgeek;
+<?php
 
-use Seatgeek\Sixpack\Response;
-
-/**
- * TODO
- * DocBlocks
- * Sort namespaces and fix autoloader
- */
+include 'Sixpack/Response.php';
 
 class Sixpack
 {
