@@ -32,13 +32,17 @@ store_in_database("sixpack-id", $resp->getClientId());
 
 For future requests, create the `Session` using the `client_id` stored in the cookie:
 
-```ruby
+```php
 $client_id = get_from_database("sixpack-id")
 $sp = new Sixpack;
 $sp->setClientId($client_id);
 
 $sp->convert('new-test');
 ```
+
+If you'd like to force the Sixpack server to return a specific alternative for development or test, you can do so by passing a query parameter named `sixpack-force` to that page being tested.
+
+`http://example.com/?sixpack-force=<alternative name>`
 
 ## Contributing
 
