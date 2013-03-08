@@ -60,7 +60,6 @@ class Sixpack
         $this->queryParams['alternatives'] = $alternatives;
     }
 
-    // TODO Allow client_id override
     public function setClientId($clientId = null)
     {
         $cookieName = $this->cookiePrefix . ':client_id';
