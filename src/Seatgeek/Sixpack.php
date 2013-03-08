@@ -23,7 +23,8 @@ class Sixpack
     // STATIC HELPER METHODS
     public static function simple_participate($experimentName, array $alternatives, $clientId = null, $force = null)
     {
-        $sp = new Sixpack;
+        $Sixpack = get_called_class();
+        $sp = new $Sixpack;
         $sp->setExperimentName($experimentName);
         $sp->setAlternatives($alternatives);
 
@@ -40,7 +41,8 @@ class Sixpack
 
     public static function simple_convert($experimentName, $clientId = null)
     {
-        $sp = new Sixpack;
+        $Sixpack = get_called_class();
+        $sp = new $Sixpack;
         $sp->setExperimentName($experimentName);
         $sp->setClientId($clientId);
 
