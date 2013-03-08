@@ -5,13 +5,13 @@ include 'Sixpack/Response.php';
 class Sixpack
 {
     // configuration
-    private $base_url = 'http://localhost:5000';
-    private $cookiePrefix = 'sixpack';
-    private $autoForce = true;
+    protected $base_url = 'http://localhost:5000';
+    protected $cookiePrefix = 'sixpack';
+    protected $autoForce = true;
 
-    private $clientId = null;
-    private $control = null;
-    private $queryParams = array(
+    protected $clientId = null;
+    protected $control = null;
+    protected $queryParams = array(
         'client_id' => null,
         'alternatives' => null,
         'force' => null,
@@ -23,7 +23,8 @@ class Sixpack
     // STATIC HELPER METHODS
     public static function simple_participate($experimentName, array $alternatives, $clientId = null, $force = null)
     {
-        $sp = new Sixpack;
+        $Sixpack = get_called_class();
+        $sp = new $Sixpack;
         $sp->setExperimentName($experimentName);
         $sp->setAlternatives($alternatives);
 
@@ -40,7 +41,8 @@ class Sixpack
 
     public static function simple_convert($experimentName, $clientId = null)
     {
-        $sp = new Sixpack;
+        $Sixpack = get_called_class();
+        $sp = new $Sixpack;
         $sp->setExperimentName($experimentName);
         $sp->setClientId($clientId);
 
@@ -58,7 +60,6 @@ class Sixpack
         $this->queryParams['alternatives'] = $alternatives;
     }
 
-    // TODO Allow client_id override
     public function setClientId($clientId = null)
     {
         $cookieName = $this->cookiePrefix . ':client_id';
@@ -75,7 +76,7 @@ class Sixpack
         }
     }
 
-    private function generateClientId()
+    protected function generateClientId()
     {
         // This is just a first pass for testing. not actually unique.
         // TODO, NOT THIS
@@ -112,7 +113,7 @@ class Sixpack
         return $respObj;
     }
 
-    private function getUserAgent()
+    protected function getUserAgent()
     {
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
             return $_SERVER['HTTP_USER_AGENT'];
@@ -120,7 +121,7 @@ class Sixpack
         return null;
     }
 
-    private function getIpAddress()
+    protected function getIpAddress()
     {
         if (isset($_SERVER['REMOTE_ADDR'])) {
             return $_SERVER['REMOTE_ADDR'];
@@ -128,7 +129,7 @@ class Sixpack
         return null;
     }
 
-    private function setServerQueryParams()
+    protected function setServerQueryParams()
     {
         $ua = $this->getUserAgent();
         $ip = $this->getIpAddress();
@@ -142,7 +143,7 @@ class Sixpack
         }
     }
 
-    private function validateRequest()
+    protected function validateRequest()
     {
         // VALID STRING REGEX
         // ^[a-z0-9][a-z0-9\-_ ]*$
@@ -155,7 +156,7 @@ class Sixpack
         // throw argumentexception
     }
 
-    private function sendRequest($endpoint = '')
+    protected function sendRequest($endpoint = '')
     {
         $this->setServerQueryParams();
 

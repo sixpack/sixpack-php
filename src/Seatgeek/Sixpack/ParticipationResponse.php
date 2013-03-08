@@ -3,7 +3,7 @@
 class ParticipationResponse extends Response
 {
 
-    private $control = null;
+    protected $control = null;
 
     public function __construct($jsonResponse, $meta, $control = null)
     {
