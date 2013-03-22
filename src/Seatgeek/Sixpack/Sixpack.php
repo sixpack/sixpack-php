@@ -1,26 +1,33 @@
-<?php
+<?php namespace Seatgeek;
 
-include 'Sixpack/Response.php';
+use Seatgeek\Sixpack\Response;
+
+/**
+ * TODO
+ * DocBlocks
+ * Sort namespaces and fix autoloader
+ */
 
 class Sixpack
 {
     // configuration
-    protected $base_url = 'http://localhost:5000';
-    protected $cookiePrefix = 'sixpack';
-    protected $autoForce = true;
+    private $base_url = 'http://localhost:5000';
+    private $cookiePrefix = 'sixpack';
+    private $autoForce = true;
 
-    protected $alternatives = array();
-    protected $clientId = null;
-    protected $force = null;
-    protected $experimentName = null;
-    protected $ipAddress = null;
-    protected $control = null;
-    protected $userAgent = null;
-
-    protected $queryParams = array();
+    private $clientId = null;
+    private $control = null;
+    private $queryParams = array(
+        'client_id' => null,
+        'alternatives' => null,
+        'force' => null,
+        'experiment' => null,
+        'ip_address' => null,
+        'user_agent' => null
+    );
 
     // STATIC HELPER METHODS
-    public static function simple_participate($experimentName, array $alternatives, $clientId = null, $force = null)
+    public static function participate($experimentName, array $alternatives, $clientId = null, $force = null)
     {
         $sp = new Sixpack;
         $sp->setExperimentName($experimentName);
@@ -37,7 +44,7 @@ class Sixpack
         return $sp->participate()->getAlternative();
     }
 
-    public static function simple_convert($experimentName, $clientId = null)
+    public static function convert($experimentName, $clientId = null)
     {
         $sp = new Sixpack;
         $sp->setExperimentName($experimentName);
@@ -48,33 +55,33 @@ class Sixpack
 
     public function setExperimentName($experiment)
     {
-        $this->experimentName = $experiment;
+        $this->queryParams['experiment'] = $experiment;
     }
 
     public function setAlternatives(array $alternatives)
     {
         $this->control = $alternatives[0];
-        $this->alternatives = $alternatives;
+        $this->queryParams['alternatives'] = $alternatives;
     }
 
     // TODO Allow client_id override
     public function setClientId($clientId = null)
     {
-        $cookieName = $this->cookiePrefix . ':client_id';
+        $cookieName = $this->cookiePrefix . '_client_id';
         $uuid = $this->generateClientId();
 
         if (isset($_COOKIE[$cookieName]) && $clientId === null) {
-            $this->clientId = $_COOKIE[$cookieName];
+            $this->queryParams['client_id'] = $_COOKIE[$cookieName];
         } elseif ($clientId !== null) {
-            $this->clientId = $clientId;
+            $this->queryParams['client_id'] = $clientId;
             setcookie($cookieName, $clientId);
         } else {
-            $this->clientId = $uuid;
+            $this->queryParams['client_id'] = $uuid;
             setcookie($cookieName, $uuid);
         }
     }
 
-    protected function generateClientId()
+    private function generateClientId()
     {
         // This is just a first pass for testing. not actually unique.
         // TODO, NOT THIS
@@ -83,31 +90,9 @@ class Sixpack
         return $clientId;
     }
 
-    public function isForced() {
-        $forceKey = "sixpack-force-{$this->experimentName}";
-        if (in_array($forceKey, array_keys($_GET))) {
-            return true;
-        }
-        return false;
-    }
-
     public function forceAlternative($alternative)
     {
-        $forceKey = "sixpack-force-{$this->experimentName}";
-        $forcedAlt = $_GET[$forceKey];
-
-        if (!in_array($forcedAlt, $this->alternatives)) {
-            throw new Exception("Invalid forced alternative");
-        }
-
-        $mockJson = '{status: "ok", alternative: { name: "'.$forcedAlt.'" }, experiment: { version: 0, name: "show-bieber" },
-                     client_id: "null"
-        }';
-        $mockMeta = array('http_code' => 200, 'called_url' => '');
-
-        $respObj = new ParticipationResponse($mockJson, $mockMeta, $this->control);
-
-        return $respObj;
+        $this->queryParams['force'] = $alternative;
     }
 
     public function status()
@@ -133,7 +118,7 @@ class Sixpack
         return $respObj;
     }
 
-    protected function getUserAgent()
+    private function getUserAgent()
     {
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
             return $_SERVER['HTTP_USER_AGENT'];
@@ -141,7 +126,7 @@ class Sixpack
         return null;
     }
 
-    protected function getIpAddress()
+    private function getIpAddress()
     {
         if (isset($_SERVER['REMOTE_ADDR'])) {
             return $_SERVER['REMOTE_ADDR'];
@@ -149,68 +134,50 @@ class Sixpack
         return null;
     }
 
-    protected function setServerQueryParams()
+    private function setServerQueryParams()
     {
         $ua = $this->getUserAgent();
         $ip = $this->getIpAddress();
 
         if ($ua !== null) {
-            $this->userAgent = $ua;
+            $this->queryParams['user_agent'] = $ua;
         }
 
         if ($ip !== null) {
-            $this->ipAddress = $ip;
+            $this->queryParams['ip_address'] = $ip;
         }
     }
 
-    protected function validateRequest()
+    private function validateRequest()
     {
+        // VALID STRING REGEX
+        // ^[a-z0-9][a-z0-9\-_ ]*$
 
-        if ($this->clientId === null) {
-            throw new Exception("Client ID must not be null");
-        }
 
-        if (!preg_match('^[a-z0-9][a-z0-9\-_ ]*$', $this->experimentName)) {
-            throw new Exception("Invalid Experiment Name: {$this->experimentName}");
-        }
-
-        if ($this->endpoint == 'participate' && count($this->alternatives) < 2) {
-            throw new Exception("At least two alternatives are required");
-        }
-
-        foreach ($this->alternatives as $alt) {
-            if (!preg_match('^[a-z0-9][a-z0-9\-_ ]*$', $alt)) {
-                throw new Exception("Invalid Alternative Name: {$alt}");
-            }
-        }
+        // ensure an experiment name is given, and validates with regex
+        // ensure at leat two alternatives, and they both validate with regex
+        // -- participate only
+        // ensure that a client id is present
+        // throw argumentexception
     }
 
-    protected function buildQueryParams() {
-        $this->clientId = $this->clientId ?: $this->setClientId();
+    private function sendRequest($endpoint = '')
+    {
         $this->setServerQueryParams();
-        $this->validateRequest();
 
-        return array(
-            'experiment' => $this->experimentName,
-            'alternatives' => $this->alternatives,
-            'client_id' => $this->clientId,
-            'ip_address' => $this->ipAddress,
-            'user_agent' => $this->userAgent,
-        );
-    }
-
-    protected function sendRequest($endpoint = '')
-    {
-        if ($this->isForced()) {
-            return $this->forceAlternative();
+        if ($this->queryParams['client_id'] === null) {
+            $this->setClientId();
         }
 
-        $this->endpoint = $endpoint;
-        $params = $this->buildQueryParams();
+        if ($this->autoForce && isset($_GET['sixpack-force'])) {
+            $this->forceAlternative($_GET['sixpack-force']);
+        }
+
+        $this->validateRequest();
 
         $url = $this->base_url . '/' . $endpoint;
 
-        $params = preg_replace('/%5B(?:[0-9]+)%5D=/', '=', http_build_query($params));
+        $params = preg_replace('/%5B(?:[0-9]+)%5D=/', '=', http_build_query($this->queryParams));
         $url .= '?' . $params;
 
         $ch = curl_init();
