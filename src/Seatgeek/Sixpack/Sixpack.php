@@ -1,6 +1,6 @@
 <?php
 
-include 'Sixpack/Response.php';
+include 'Response.php';
 
 class Sixpack
 {
@@ -17,12 +17,11 @@ class Sixpack
     protected $control = null;
     protected $userAgent = null;
 
-    protected $queryParams = array();
-
     // STATIC HELPER METHODS
     public static function simple_participate($experimentName, array $alternatives, $clientId = null, $force = null)
     {
-        $sp = new Sixpack;
+        $klass = get_called_class();
+        $sp = new $klass;
         $sp->setExperimentName($experimentName);
         $sp->setAlternatives($alternatives);
 
@@ -31,7 +30,7 @@ class Sixpack
         }
 
         if ($force && in_array($force, $alternatives)) {
-            $sp->forceAlternative($force);
+            $sp->force = $force;
         }
 
         return $sp->participate()->getAlternative();
@@ -57,7 +56,6 @@ class Sixpack
         $this->alternatives = $alternatives;
     }
 
-    // TODO Allow client_id override
     public function setClientId($clientId = null)
     {
         $cookieName = $this->cookiePrefix . ':client_id';
@@ -84,30 +82,29 @@ class Sixpack
     }
 
     public function isForced() {
-        $forceKey = "sixpack-force-{$this->experimentName}";
+        $forceKey = "sixpack-force-".$this->experimentName;
         if (in_array($forceKey, array_keys($_GET))) {
             return true;
         }
         return false;
     }
 
-    public function forceAlternative($alternative)
+    public function forceAlternative()
     {
-        $forceKey = "sixpack-force-{$this->experimentName}";
+        $forceKey = "sixpack-force-".$this->experimentName;
         $forcedAlt = $_GET[$forceKey];
 
         if (!in_array($forcedAlt, $this->alternatives)) {
             throw new Exception("Invalid forced alternative");
         }
 
-        $mockJson = '{status: "ok", alternative: { name: "'.$forcedAlt.'" }, experiment: { version: 0, name: "show-bieber" },
-                     client_id: "null"
+        $mockJson = '{"status": "ok", "alternative": { "name": "'.$forcedAlt.'" }, "experiment": { "version": 0, "name": "show-bieber" },
+                     "client_id": "null"
         }';
         $mockMeta = array('http_code' => 200, 'called_url' => '');
 
-        $respObj = new ParticipationResponse($mockJson, $mockMeta, $this->control);
 
-        return $respObj;
+        return array($mockJson, $mockMeta);
     }
 
     public function status()
@@ -170,8 +167,8 @@ class Sixpack
             throw new Exception("Client ID must not be null");
         }
 
-        if (!preg_match('^[a-z0-9][a-z0-9\-_ ]*$', $this->experimentName)) {
-            throw new Exception("Invalid Experiment Name: {$this->experimentName}");
+        if (!preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $this->experimentName)) {
+            throw new Exception("Invalid Experiment Name: $this->experimentName");
         }
 
         if ($this->endpoint == 'participate' && count($this->alternatives) < 2) {
@@ -179,7 +176,7 @@ class Sixpack
         }
 
         foreach ($this->alternatives as $alt) {
-            if (!preg_match('^[a-z0-9][a-z0-9\-_ ]*$', $alt)) {
+            if (!preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $alt)) {
                 throw new Exception("Invalid Alternative Name: {$alt}");
             }
         }

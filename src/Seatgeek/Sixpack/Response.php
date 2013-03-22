@@ -1,7 +1,7 @@
 <?php
 
-include 'Sixpack/ConversionResponse.php';
-include 'Sixpack/ParticipationResponse.php';
+include 'ConversionResponse.php';
+include 'ParticipationResponse.php';
 
 class Response {
 
