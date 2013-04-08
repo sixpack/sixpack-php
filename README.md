@@ -42,7 +42,7 @@ $sp->convert('new-test');
 
 If you'd like to force the Sixpack server to return a specific alternative for development or testing, you can do so by passing a query parameter named `sixpack-force` to that page being tested.
 
-`http://example.com/?sixpack-force=<alternative name>`
+`http://example.com/?sixpack-force-<experiment name>=<alternative name>`
 
 ## Contributing
 
