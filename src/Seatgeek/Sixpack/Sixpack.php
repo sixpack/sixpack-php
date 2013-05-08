@@ -58,7 +58,7 @@ class Sixpack
 
     public function setClientId($clientId = null)
     {
-        $cookieName = $this->cookiePrefix . ':client_id';
+        $cookieName = $this->cookiePrefix . '_client_id';
         $uuid = $this->generateClientId();
 
         if (isset($_COOKIE[$cookieName]) && $clientId === null) {
