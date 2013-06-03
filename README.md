@@ -1,3 +1,5 @@
+[![Latest Stable Version](https://poser.pugx.org/seatgeek/sixpack-php/version.png)](https://packagist.org/packages/seatgeek/sixpack-php)
+
 # Sixpack
 
 PHP client library for SeatGeak's Sixpack ab testing framework.
