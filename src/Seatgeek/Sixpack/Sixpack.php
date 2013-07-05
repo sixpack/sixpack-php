@@ -72,10 +72,10 @@ class Sixpack
             $this->clientId = $_COOKIE[$cookieName];
         } elseif ($clientId !== null) {
             $this->clientId = $clientId;
-            setcookie($cookieName, $clientId);
+            setcookie($cookieName, $clientId, time() + (60 * 60 * 24 * 30 * 100));
         } else {
             $this->clientId = $uuid;
-            setcookie($cookieName, $uuid);
+            setcookie($cookieName, $uuid,  time() + (60 * 60 * 24 * 30 * 100));
         }
     }
 
