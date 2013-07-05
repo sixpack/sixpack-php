@@ -191,7 +191,11 @@ class Sixpack
     }
 
     protected function buildQueryParams() {
-        $this->clientId = $this->clientId ?: $this->setClientId();
+
+        if ($this->clientId === null) {
+            $this->setClientId();
+        }
+
         $this->setServerQueryParams();
         $this->validateRequest();
 
