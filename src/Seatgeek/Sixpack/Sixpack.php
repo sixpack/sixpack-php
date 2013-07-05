@@ -16,6 +16,7 @@ class Sixpack
     protected $ipAddress = null;
     protected $control = null;
     protected $userAgent = null;
+    protected $kpi = null;
 
     // STATIC HELPER METHODS
     public static function simple_participate($experimentName, array $alternatives, $clientId = null, $force = null)
@@ -36,11 +37,12 @@ class Sixpack
         return $sp->participate()->getAlternative();
     }
 
-    public static function simple_convert($experimentName, $clientId = null)
+    public static function simple_convert($experimentName, $clientId = null, $kpi = null)
     {
         $sp = new Sixpack;
         $sp->setExperimentName($experimentName);
         $sp->setClientId($clientId);
+        $sp->setKpi($kpi);
 
         return $sp->convert()->getStatus();
     }
@@ -48,6 +50,11 @@ class Sixpack
     public function setExperimentName($experiment)
     {
         $this->experimentName = $experiment;
+    }
+
+    public function setKpi($kpi)
+    {
+        $this->kpi = $kpi;
     }
 
     public function setAlternatives(array $alternatives)
@@ -193,6 +200,7 @@ class Sixpack
             'client_id' => $this->clientId,
             'ip_address' => $this->ipAddress,
             'user_agent' => $this->userAgent,
+            'kpi' => $this->kpi
         );
     }
 
