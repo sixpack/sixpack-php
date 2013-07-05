@@ -39,7 +39,8 @@ class Sixpack
 
     public static function simple_convert($experimentName, $clientId = null, $kpi = null)
     {
-        $sp = new Sixpack;
+        $klass = get_called_class();
+        $sp = new $klass;
         $sp->setExperimentName($experimentName);
         $sp->setClientId($clientId);
         $sp->setKpi($kpi);
