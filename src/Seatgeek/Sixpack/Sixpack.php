@@ -67,17 +67,15 @@ class Sixpack
     public function setClientId($clientId = null)
     {
         $cookieName = $this->cookiePrefix . '_client_id';
-        $uuid = $this->generateClientId();
-
-        if (isset($_COOKIE[$cookieName]) && $clientId === null) {
-            $this->clientId = $_COOKIE[$cookieName];
-        } elseif ($clientId !== null) {
-            $this->clientId = $clientId;
-            setcookie($cookieName, $clientId, time() + (60 * 60 * 24 * 30 * 100));
-        } else {
-            $this->clientId = $uuid;
-            setcookie($cookieName, $uuid,  time() + (60 * 60 * 24 * 30 * 100));
+        if ($clientId === null) {
+          if (isset($_COOKIE[$cookieName])) {
+            $clientId = $_COOKIE[$cookieName];
+          } else {
+            $clientId = $this->generateClientId();
+          }
         }
+        $this->clientId = $clientId;
+        setcookie($cookieName, $clientId, time() + (60 * 60 * 24 * 30 * 100), "/");
     }
 
     protected function generateClientId()
