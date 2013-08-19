@@ -1,6 +1,8 @@
-<?php
+<?php namespace Sixpack\Response;
 
-class ParticipationResponse extends Response
+use Sixpack\Response\Base;
+
+class Participation extends Base
 {
 
     private $control = null;

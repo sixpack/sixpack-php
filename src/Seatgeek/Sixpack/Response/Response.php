@@ -1,9 +1,9 @@
-<?php
+<?php namespace Sixpack\Response;
 
-include 'ConversionResponse.php';
-include 'ParticipationResponse.php';
+include 'Conversion.php';
+include 'Participation.php';
 
-class Response {
+class Base {
 
     protected $response = null;
     protected $meta = null;
