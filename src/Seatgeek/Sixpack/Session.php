@@ -117,13 +117,14 @@ class Base {
         }
 
         if ($this->isForced($experiment)) {
-            return $this->forceAlternative($experiment, $alternatives);
+            list($rawResp, $meta) = $this->forceAlternative($experiment, $alternatives);
+        } else {
+            list($rawResp, $meta) = $this->sendRequest('participate', array(
+                "experiment" => $experiment,
+                "alternatives" => $alternatives,
+            ));
         }
 
-        list($rawResp, $meta) = $this->sendRequest('participate', array(
-          "experiment" => $experiment,
-          "alternatives" => $alternatives,
-        ));
         return new Response\Participation($rawResp, $meta, $alternatives[0]);
     }
 
