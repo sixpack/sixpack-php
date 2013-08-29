@@ -117,7 +117,7 @@ class Base {
         }
 
         if ($this->isForced($experiment)) {
-            return $this->forceAlternative();
+            return $this->forceAlternative($experiment, $alternatives);
         }
 
         list($rawResp, $meta) = $this->sendRequest('participate', array(
