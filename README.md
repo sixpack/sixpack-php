@@ -12,22 +12,22 @@ Simply clone the project and include `sixpack.php` to your PHP Project
 
 Basic example:
 
-The PHP client stores a unique client id in the current user's cookie by default. The `simple_participate` and `simple_convert` methods are helper methods to easily allow Sixpack to be called from your views. They also handle cookie storage.
+The PHP client stores a unique client id in the current user's cookie by default.
 
 ```php
-include 'sixpack.php';
-
-// Participate in a test (creates the test if necessary)
-$alt = Sixpack::simple_participate('new-test', array('alternative-1', 'alternative-2'));
-
-// Convert
-Sixpack::simple_convert('new-test');
+$sp = new \Seatgeek\Sixpack\Session;
+$alt = $sp->participate('test', array('blue', 'red'))->getAlternative();
+if ($alt == 'blue') {
+    /* do something blue */
+} else {
+    /* do somethign red */
+}
 ```
 
 Each session has a `client_id` associated with it that must be preserved across requests. The PHP client handles this automatically. If you'd wish to change that behavoir, you can do so like this:
 
 ```php
-$sp = new Sixpack;
+$sp = new \Seatgeek\Sixpack\Session;
 $resp = $sp->participate("new-test", array("alternative-1", "alternative-2"));
 store_in_database("sixpack-id", $resp->getClientId());
 ```
@@ -36,11 +36,14 @@ For future requests, create the `Session` using the `client_id` stored in the co
 
 ```php
 $client_id = get_from_database("sixpack-id")
-$sp = new Sixpack;
-$sp->setClientId($client_id);
+$sp = new \Seatgeek\Sixpack\Session(array('clientId' => $client_id));
 
 $sp->convert('new-test');
 ```
+
+Other possible options for the Session constructor are:
+* baseUrl - Sixpack Server's location on the web
+* cookiePrefix - you can set a different prefix for the cookie if you like. Default is `sixpack`
 
 If you'd like to force the Sixpack server to return a specific alternative for development or testing, you can do so by passing a query parameter named `sixpack-force` to that page being tested.
 
