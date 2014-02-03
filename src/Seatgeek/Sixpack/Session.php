@@ -105,15 +105,20 @@ class Base {
         return new Response\Conversion($rawResp, $meta);
     }
 
-    public function participate($experiment, $alternatives)
+    public function participate($experiment, $alternatives, $traffic_fraction = 1)
     {
         if (count($alternatives) < 2) {
             throw new \Exception("At least two alternatives are required");
         }
+
         foreach ($alternatives as $alt) {
             if (!preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $alt)) {
                 throw new \Exception("Invalid Alternative Name: {$alt}");
             }
+        }
+
+        if (float($traffic_fraction) < 0 || float($traffic_fraction) > 1) {
+            throw new \Exception("Invalid Traffic Fraction");
         }
 
         if ($this->isForced($experiment)) {
@@ -122,6 +127,7 @@ class Base {
             list($rawResp, $meta) = $this->sendRequest('participate', array(
                 "experiment" => $experiment,
                 "alternatives" => $alternatives,
+                "traffic_fraction" => $traffic_fraction
             ));
         }
 
@@ -153,7 +159,7 @@ class Base {
         $params = array_merge(array(
             'client_id' => $this->clientId,
             'ip_address' => $this->getIpAddress(),
-            'user_agent' => $this->getUserAgent(),
+            'user_agent' => $this->getUserAgent()
         ), $params);
 
         $url = $this->baseUrl . '/' . $endpoint;
