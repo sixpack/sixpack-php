@@ -7,6 +7,7 @@ class Session
     // configuration
     protected $baseUrl = 'http://localhost:5000';
     protected $cookiePrefix = 'sixpack';
+    protected $timeout = 500;
 
     protected $clientId = null;
 
@@ -17,6 +18,9 @@ class Session
         }
         if (isset($options["cookiePrefix"])) {
             $this->cookiePrefix = $options["cookiePrefix"];
+        }
+        if (isset($options["timeout"])) {
+            $this->timeout = $options["timeout"];
         }
         $this->setClientId(isset($options["clientId"]) ? $options["clientId"] : null);
     }
@@ -59,6 +63,16 @@ class Session
         $md5 = strtoupper(md5(uniqid(rand(), true)));
         $clientId = substr($md5, 0, 8) . '-' . substr($md5, 8, 4) . '-' . substr($md5, 12, 4) . '-' . substr($md5, 16, 4) . '-' . substr($md5, 20);
         return $clientId;
+    }
+
+    public function setTimeout($milliseconds)
+    {
+        $this->timeout = $milliseconds;
+    }
+
+    public function getTimeout()
+    {
+        return $this->timeout;
     }
 
     public function isForced($experiment)
@@ -169,7 +183,7 @@ class Session
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $this->timeout);
         // Make sub 1 sec timeouts work, according to: http://ravidhavlesha.wordpress.com/2012/01/08/curl-timeout-problem-and-solution/
         curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
 
