@@ -1,10 +1,9 @@
-<?php namespace Sixpack\Response;
+<?php namespace Seatgeek\Sixpack\Response;
 
-use Sixpack\Response\Base;
+use Seatgeek\Sixpack\Response\Response;
 
-class Participation extends Base
+class Participation extends Response
 {
-
     private $control = null;
 
     public function __construct($jsonResponse, $meta, $control = null)

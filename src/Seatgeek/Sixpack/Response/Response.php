@@ -1,10 +1,7 @@
-<?php namespace Sixpack\Response;
+<?php namespace Seatgeek\Sixpack\Response;
 
-include 'Conversion.php';
-include 'Participation.php';
-
-class Base {
-
+class Response
+{
     protected $response = null;
     protected $meta = null;
 

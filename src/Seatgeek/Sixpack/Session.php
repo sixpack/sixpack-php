@@ -1,10 +1,9 @@
-<?php namespace Sixpack\Session;
+<?php namespace Seatgeek\Sixpack;
 
-include 'Response/Response.php';
+use Seatgeek\Sixpack\Response;
 
-use Sixpack\Response;
-
-class Base {
+class Session
+{
     // configuration
     protected $baseUrl = 'http://localhost:5000';
     protected $cookiePrefix = 'sixpack';
@@ -99,8 +98,8 @@ class Base {
     public function convert($experiment, $kpi = null)
     {
         list($rawResp, $meta) = $this->sendRequest('convert', array(
-          "experiment" => $experiment,
-          "kpi" => $kpi,
+            "experiment" => $experiment,
+            "kpi" => $kpi,
         ));
         return new Response\Conversion($rawResp, $meta);
     }
@@ -117,7 +116,7 @@ class Base {
             }
         }
 
-        if (float($traffic_fraction) < 0 || float($traffic_fraction) > 1) {
+        if (floatval($traffic_fraction) < 0 || floatval($traffic_fraction) > 1) {
             throw new \Exception("Invalid Traffic Fraction");
         }
 
@@ -180,18 +179,4 @@ class Base {
         // handle failures in call dispatcher
         return array($return, $meta);
     }
-}
-
-class Temp extends Base {
-
-    protected function retrieveClientId()
-    {
-        return;
-    }
-
-    protected function storeClientId($clientId)
-    {
-        return;
-    }
-
 }
