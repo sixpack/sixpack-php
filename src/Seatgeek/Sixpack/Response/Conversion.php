@@ -1,5 +1,5 @@
-<?php namespace Sixpack\Response;
+<?php namespace Seatgeek\Sixpack\Response;
 
-use Sixpack\Response\Base;
+use Seatgeek\Sixpack\Response\Response;
 
-class Conversion extends Base {}
+class Conversion extends Response {}

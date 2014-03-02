@@ -1,13 +1,13 @@
-<?php namespace Sixpack\Session;
+<?php namespace Seatgeek\Sixpack;
 
-include 'Response/Response.php';
+use Seatgeek\Sixpack\Response;
 
-use Sixpack\Response;
-
-class Base {
+class Session
+{
     // configuration
     protected $baseUrl = 'http://localhost:5000';
     protected $cookiePrefix = 'sixpack';
+    protected $timeout = 500;
 
     protected $clientId = null;
 
@@ -18,6 +18,9 @@ class Base {
         }
         if (isset($options["cookiePrefix"])) {
             $this->cookiePrefix = $options["cookiePrefix"];
+        }
+        if (isset($options["timeout"])) {
+            $this->timeout = $options["timeout"];
         }
         $this->setClientId(isset($options["clientId"]) ? $options["clientId"] : null);
     }
@@ -62,6 +65,16 @@ class Base {
         return $clientId;
     }
 
+    public function setTimeout($milliseconds)
+    {
+        $this->timeout = $milliseconds;
+    }
+
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
     public function isForced($experiment)
     {
         $forceKey = "sixpack-force-" . $experiment;
@@ -99,8 +112,8 @@ class Base {
     public function convert($experiment, $kpi = null)
     {
         list($rawResp, $meta) = $this->sendRequest('convert', array(
-          "experiment" => $experiment,
-          "kpi" => $kpi,
+            "experiment" => $experiment,
+            "kpi" => $kpi,
         ));
         return new Response\Conversion($rawResp, $meta);
     }
@@ -117,7 +130,7 @@ class Base {
             }
         }
 
-        if (float($traffic_fraction) < 0 || float($traffic_fraction) > 1) {
+        if (floatval($traffic_fraction) < 0 || floatval($traffic_fraction) > 1) {
             throw new \Exception("Invalid Traffic Fraction");
         }
 
@@ -170,7 +183,7 @@ class Base {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 500);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, $this->timeout);
         // Make sub 1 sec timeouts work, according to: http://ravidhavlesha.wordpress.com/2012/01/08/curl-timeout-problem-and-solution/
         curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
 
@@ -180,18 +193,4 @@ class Base {
         // handle failures in call dispatcher
         return array($return, $meta);
     }
-}
-
-class Temp extends Base {
-
-    protected function retrieveClientId()
-    {
-        return;
-    }
-
-    protected function storeClientId($clientId)
-    {
-        return;
-    }
-
 }
