@@ -1,6 +1,6 @@
-<?php namespace Seatgeek\Sixpack\Response;
+<?php namespace SeatGeek\Sixpack\Response;
 
-class Response
+class Base
 {
     protected $response = null;
     protected $meta = null;

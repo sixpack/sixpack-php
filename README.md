@@ -15,7 +15,7 @@ Basic example:
 The PHP client stores a unique client id in the current user's cookie by default.
 
 ```php
-$sp = new \Seatgeek\Sixpack\Session;
+$sp = new \SeatGeek\Sixpack\Session\Base;
 $alt = $sp->participate('test', array('blue', 'red'))->getAlternative();
 if ($alt == 'blue') {
     /* do something blue */
@@ -27,7 +27,7 @@ if ($alt == 'blue') {
 Each session has a `client_id` associated with it that must be preserved across requests. The PHP client handles this automatically. If you'd wish to change that behavoir, you can do so like this:
 
 ```php
-$sp = new \Seatgeek\Sixpack\Session;
+$sp = new \SeatGeek\Sixpack\Session\Base;
 $resp = $sp->participate("new-test", array("alternative-1", "alternative-2"));
 store_in_database("sixpack-id", $resp->getClientId());
 ```
@@ -36,7 +36,7 @@ For future requests, create the `Session` using the `client_id` stored in the co
 
 ```php
 $client_id = get_from_database("sixpack-id")
-$sp = new \Seatgeek\Sixpack\Session(array('clientId' => $client_id));
+$sp = new \SeatGeek\Sixpack\Session\Base(array('clientId' => $client_id));
 
 $sp->convert('new-test');
 ```

@@ -1,8 +1,8 @@
-<?php namespace Seatgeek\Sixpack;
+<?php namespace SeatGeek\Sixpack\Session;
 
-use Seatgeek\Sixpack\Response;
+use SeatGeek\Sixpack\Response;
 
-class Session
+class Base
 {
     // configuration
     protected $baseUrl = 'http://localhost:5000';
