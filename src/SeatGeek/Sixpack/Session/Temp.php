@@ -1,4 +1,4 @@
-<?php namespace SeatGeek\SeatGeek\Session;
+<?php namespace SeatGeek\Sixpack\Session;
 
 class Temp extends Base {
 
