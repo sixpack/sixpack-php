@@ -1,8 +1,8 @@
 <?php namespace SeatGeek\Sixpack\Response;
 
-use SeatGeek\Sixpack\Response\Response;
+use SeatGeek\Sixpack\Response\Base;
 
-class Participation extends Response
+class Participation extends Base
 {
     private $control = null;
 
