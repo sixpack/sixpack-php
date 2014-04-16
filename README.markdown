@@ -2,7 +2,7 @@
 
 # Sixpack
 
-PHP client library for SeatGeak's Sixpack ab testing framework.
+PHP client library for SeatGeak's [Sixpack](https://github.com/seatgeek/sixpack) ab testing framework.
 
 ## Installation
 
@@ -56,3 +56,7 @@ If you'd like to force the Sixpack server to return a specific alternative for d
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+## License
+
+sixpack-php is released under the [BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause).
