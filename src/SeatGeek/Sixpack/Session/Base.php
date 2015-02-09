@@ -157,17 +157,21 @@ class Base
 
     protected function getIpAddress()
     {
+    	$ip = null;
     	if (function_exists('apache_request_headers')) {
 		$headers = apache_request_headers();
-		if (isset($headers['X-Forwarded-For']) && !empty($headers['X-Forwarded-For']))
-			return reset(explode(',', $headers['X-Forwarded-For']));
-
-		if (isset($headers['HTTP_X_FORWARDED_FOR']) && !empty($headers['HTTP_X_FORWARDED_FOR']))
-			return reset(explode(',', $headers['HTTP_X_FORWARDED_FOR']));
-    	}
-
-	if (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR']))
-		return $_SERVER['REMOTE_ADDR'];
+		if (isset($headers['X-Forwarded-For']) && !empty($headers['X-Forwarded-For'])) {
+			$ip = reset(explode(',', $headers['X-Forwarded-For']));
+		} elseif (isset($headers['HTTP_X_FORWARDED_FOR']) && !empty($headers['HTTP_X_FORWARDED_FOR'])) {
+			$ip =  reset(explode(',', $headers['HTTP_X_FORWARDED_FOR']));
+		} else {
+			//
+		}
+    	} elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])) {
+		$ip = $_SERVER['REMOTE_ADDR'];
+	} else {
+		//
+	}
 
 	return null;
     }
