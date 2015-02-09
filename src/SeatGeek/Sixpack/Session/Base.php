@@ -157,23 +157,26 @@ class Base
 
     protected function getIpAddress()
     {
-    	$ip = null;
-    	if (function_exists('apache_request_headers')) {
-		$headers = apache_request_headers();
-		if (isset($headers['X-Forwarded-For']) && !empty($headers['X-Forwarded-For'])) {
-			$ip = reset(explode(',', $headers['X-Forwarded-For']));
-		} elseif (isset($headers['HTTP_X_FORWARDED_FOR']) && !empty($headers['HTTP_X_FORWARDED_FOR'])) {
-			$ip =  reset(explode(',', $headers['HTTP_X_FORWARDED_FOR']));
-		} else {
-			//
-		}
-    	} elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])) {
-		$ip = $_SERVER['REMOTE_ADDR'];
-	} else {
-		//
-	}
+    	$ordered_choices = array(
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'HTTP_CLIENT_IP',
+            'REMOTE_ADDR'
+        );
+        $invalid_ips = array('127.0.0.1', '::1');
 
-	return null;
+        // check each server var in order
+        // accepted ip must be non null and not in the invalid_ips list
+        foreach ($ordered_choices as $var) {
+            if (isset($_SERVER[$var])) {
+                $ip = $_SERVER[$var];
+                if ($ip && !in_array($ip, $invalid_ips)) {
+                    return reset(explode(',', $ip));
+                }
+            }
+        }
+
+        return null;
     }
 
     protected function sendRequest($endpoint, $params = array())
