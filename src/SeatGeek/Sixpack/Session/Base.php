@@ -171,7 +171,8 @@ class Base
             if (isset($_SERVER[$var])) {
                 $ip = $_SERVER[$var];
                 if ($ip && !in_array($ip, $invalid_ips)) {
-                    return reset(explode(',', $ip));
+                    $ips = explode(',', $ip);
+                    return reset($ips);
                 }
             }
         }
