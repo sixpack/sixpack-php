@@ -157,9 +157,26 @@ class Base
 
     protected function getIpAddress()
     {
-        if (isset($_SERVER['REMOTE_ADDR'])) {
-            return $_SERVER['REMOTE_ADDR'];
+    	$ordered_choices = array(
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'HTTP_CLIENT_IP',
+            'REMOTE_ADDR'
+        );
+        $invalid_ips = array('127.0.0.1', '::1');
+
+        // check each server var in order
+        // accepted ip must be non null and not in the invalid_ips list
+        foreach ($ordered_choices as $var) {
+            if (isset($_SERVER[$var])) {
+                $ip = $_SERVER[$var];
+                if ($ip && !in_array($ip, $invalid_ips)) {
+                    $ips = explode(',', $ip);
+                    return reset($ips);
+                }
+            }
         }
+
         return null;
     }
 
