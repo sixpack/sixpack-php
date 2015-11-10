@@ -154,7 +154,7 @@ class Base
      *   than 1
      * @throws \SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException
      *   if an alternative is requested that doesn't exist
-     * @return array
+     * @return \SeatGeek\Sixpack\Response\Participation
      */
     public function participate($experiment, $alternatives, $traffic_fraction = 1)
     {
