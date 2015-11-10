@@ -123,6 +123,15 @@ class Base
         return $this->sendRequest('/_status');
     }
 
+    /**
+     * convert
+     *
+     * @param string $experiment
+     * @param mixed $kpi
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     *   if the experiment name is invalid
+     * @return \SeatGeek\Sixpack\Response\Conversion
+     */
     public function convert($experiment, $kpi = null)
     {
         list($rawResp, $meta) = $this->sendRequest('convert', array(
@@ -137,6 +146,8 @@ class Base
      *
      * @param string $experiment name of the experiment
      * @param array $alternatives the alternatives to pick from
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     *   if the experiment name is invalid
      * @throws \InvalidArgumentException if less than two alternatives are specified
      * @throws \InvalidArgumentException if an alternative has an invalid name
      * @throws \InvalidArgumentException if the traffic fraction is less than 0 or greater
@@ -207,6 +218,15 @@ class Base
         return null;
     }
 
+    /**
+     * Send the request to sixpack
+     *
+     * @param string $endpoint api end point
+     * @param array $params
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     *   if the experiment name is invalid
+     * @return array
+     */
     protected function sendRequest($endpoint, $params = array())
     {
         if (isset($params["experiment"]) && !preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $params["experiment"])) {
