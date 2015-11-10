@@ -59,7 +59,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
      * Valid 'foo', invalid '-foo', '@bar'
      *
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid Alternative Name: @ne
+     * @expectedExceptionMessage Invalid Alternative Name: $ne
      */
     public function testParticipateInvalidAlternativeName()
     {
@@ -68,6 +68,40 @@ class BaseTest extends PHPUnit_Framework_TestCase
             ->setMethods(['sendRequest'])
             ->getMock();
 
-        $base->participate('one', ['@ne', 'two']);
+        $base->participate('one', ['$ne', 'two']);
+    }
+
+    /**
+     * Test participate with invalid traffic fraction
+     *
+     * Valid 'foo', invalid '-foo', '@bar'
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Invalid Traffic Fraction
+     * @dataProvider invalidTrafficFractionProvider
+     */
+    public function testParticipateInvalidTrafficFraction($fraction)
+    {
+        $base = $this->getMockBuilder('SeatGeek\Sixpack\Session\Base')
+            ->disableOriginalConstructor()
+            ->setMethods(['sendRequest'])
+            ->getMock();
+
+        $base->participate('one', ['one', 'two'], $fraction);
+    }
+
+    /**
+     * invalidTrafficFractionProvider
+     *
+     * @return array
+     */
+    public function invalidTrafficFractionProvider()
+    {
+        return [
+            [-1],
+            [-0.01],
+            [1.01],
+            [2]
+        ];
     }
 }
