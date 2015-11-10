@@ -19,7 +19,7 @@ class InvalidExperimentNameException extends Exception
     /**
      * Constructor
      *
-     * @param string|array If passed, it's the experiment name
+     * @param string|null If passed, it's the experiment name
      * @param int $code The exception code
      * @param \Exception $previous The previous exception
      */
