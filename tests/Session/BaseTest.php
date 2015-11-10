@@ -36,4 +36,20 @@ class BaseTest extends PHPUnit_Framework_TestCase
         $return = $base->participate('the', ['the', 'alternative'], 0.42);
         $this->assertInstanceOf('SeatGeek\Sixpack\Response\Participation', $return);
     }
+
+    /**
+     * testParticipateTooFewAlternatives
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage At least two alternatives are required
+     */
+    public function testParticipateTooFewAlternatives()
+    {
+        $base = $this->getMockBuilder('SeatGeek\Sixpack\Session\Base')
+            ->disableOriginalConstructor()
+            ->setMethods(['sendRequest'])
+            ->getMock();
+
+        $base->participate('one', ['one']);
+    }
 }
