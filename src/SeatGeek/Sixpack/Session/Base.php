@@ -3,6 +3,9 @@
 namespace SeatGeek\Sixpack\Session;
 
 use SeatGeek\Sixpack\Response;
+use SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException;
+use SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException;
+use \InvalidArgumentException;
 
 class Base
 {
@@ -86,13 +89,22 @@ class Base
         return false;
     }
 
+    /**
+     * Force the alternative
+     *
+     * @param string $experiment
+     * @param array $alternatives
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException
+     *   if an alternative is requested that doesn't exist
+     * @return array
+     */
     protected function forceAlternative($experiment, $alternatives)
     {
         $forceKey = "sixpack-force-" . $experiment;
-        $forcedAlt = $_GET[$forceKey];
+        $forcedAlt = isset($_GET[$forceKey]) ? $_GET[$forceKey] : null;
 
         if (!in_array($forcedAlt, $alternatives)) {
-            throw new \Exception("Invalid forced alternative");
+            throw new InvalidForcedAlternativeException([$forcedAlt, $alternatives]);
         }
 
         $mockJson = json_encode(array(
@@ -111,6 +123,15 @@ class Base
         return $this->sendRequest('/_status');
     }
 
+    /**
+     * convert
+     *
+     * @param string $experiment
+     * @param mixed $kpi
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     *   if the experiment name is invalid
+     * @return \SeatGeek\Sixpack\Response\Conversion
+     */
     public function convert($experiment, $kpi = null)
     {
         list($rawResp, $meta) = $this->sendRequest('convert', array(
@@ -120,20 +141,35 @@ class Base
         return new Response\Conversion($rawResp, $meta);
     }
 
+    /**
+     * Participate in an experiment
+     *
+     * @param string $experiment name of the experiment
+     * @param array $alternatives the alternatives to pick from
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     *   if the experiment name is invalid
+     * @throws \InvalidArgumentException if less than two alternatives are specified
+     * @throws \InvalidArgumentException if an alternative has an invalid name
+     * @throws \InvalidArgumentException if the traffic fraction is less than 0 or greater
+     *   than 1
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException
+     *   if an alternative is requested that doesn't exist
+     * @return \SeatGeek\Sixpack\Response\Participation
+     */
     public function participate($experiment, $alternatives, $traffic_fraction = 1)
     {
         if (count($alternatives) < 2) {
-            throw new \Exception("At least two alternatives are required");
+            throw new InvalidArgumentException("At least two alternatives are required");
         }
 
         foreach ($alternatives as $alt) {
             if (!preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $alt)) {
-                throw new \Exception("Invalid Alternative Name: {$alt}");
+                throw new InvalidArgumentException("Invalid Alternative Name: {$alt}");
             }
         }
 
         if (floatval($traffic_fraction) < 0 || floatval($traffic_fraction) > 1) {
-            throw new \Exception("Invalid Traffic Fraction");
+            throw new InvalidArgumentException("Invalid Traffic Fraction");
         }
 
         if ($this->isForced($experiment)) {
@@ -182,10 +218,19 @@ class Base
         return null;
     }
 
+    /**
+     * Send the request to sixpack
+     *
+     * @param string $endpoint api end point
+     * @param array $params
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     *   if the experiment name is invalid
+     * @return array
+     */
     protected function sendRequest($endpoint, $params = array())
     {
         if (isset($params["experiment"]) && !preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $params["experiment"])) {
-            throw new \Exception("Invalid Experiment Name: " . $params["experiment"]);
+            throw new InvalidExperimentNameException($params["experiment"]);
         }
 
         $params = array_merge(array(

@@ -17,5 +17,10 @@
             "SeatGeek": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "SeatGeek\\Sixpack\\Test\\": "tests/"
+        }
+    },
     "minimum-stability": "dev"
 }
