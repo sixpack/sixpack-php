@@ -38,7 +38,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * testParticipateTooFewAlternatives
+     * Test participate with too few alternatives
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage At least two alternatives are required
@@ -51,5 +51,23 @@ class BaseTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $base->participate('one', ['one']);
+    }
+
+    /**
+     * Test participate with badly named alternatives
+     *
+     * Valid 'foo', invalid '-foo', '@bar'
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Invalid Alternative Name: @ne
+     */
+    public function testParticipateInvalidAlternativeName()
+    {
+        $base = $this->getMockBuilder('SeatGeek\Sixpack\Session\Base')
+            ->disableOriginalConstructor()
+            ->setMethods(['sendRequest'])
+            ->getMock();
+
+        $base->participate('one', ['@ne', 'two']);
     }
 }
