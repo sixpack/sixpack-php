@@ -1,3 +1,4 @@
+[![Build Status](https://img.shields.io/travis/seatgeek/sixpack-php/master.svg?style=flat-square)](https://travis-ci.org/seatgeek/sixpack-php)
 [![Latest Stable Version](https://poser.pugx.org/seatgeek/sixpack-php/version.png)](https://packagist.org/packages/seatgeek/sixpack-php)
 
 # Sixpack
