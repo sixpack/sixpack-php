@@ -4,6 +4,7 @@ namespace SeatGeek\Sixpack\Session;
 
 use SeatGeek\Sixpack\Response;
 use SeatGeek\Sixpack\Session\Exception\InvalidForcedException;
+use \InvalidArgumentException;
 
 class Base
 {
@@ -130,20 +131,33 @@ class Base
         return new Response\Conversion($rawResp, $meta);
     }
 
+    /**
+     * Participate in an experiment
+     *
+     * @param string $experiment name of the experiment
+     * @param array $alternatives the alternatives to pick from
+     * @throws \InvalidArgumentException if less than two alternatives are specified
+     * @throws \InvalidArgumentException if an alternative has an invalid name
+     * @throws \InvalidArgumentException if the traffic fraction is less than 0 or greater
+     *   than 1
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException
+     *   if an alternative is requested that doesn't exist
+     * @return array
+     */
     public function participate($experiment, $alternatives, $traffic_fraction = 1)
     {
         if (count($alternatives) < 2) {
-            throw new \Exception("At least two alternatives are required");
+            throw new InvalidArgumentException("At least two alternatives are required");
         }
 
         foreach ($alternatives as $alt) {
             if (!preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $alt)) {
-                throw new \Exception("Invalid Alternative Name: {$alt}");
+                throw new InvalidArgumentException("Invalid Alternative Name: {$alt}");
             }
         }
 
         if (floatval($traffic_fraction) < 0 || floatval($traffic_fraction) > 1) {
-            throw new \Exception("Invalid Traffic Fraction");
+            throw new InvalidArgumentException("Invalid Traffic Fraction");
         }
 
         if ($this->isForced($experiment)) {
