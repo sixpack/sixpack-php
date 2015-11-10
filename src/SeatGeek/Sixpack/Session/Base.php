@@ -3,6 +3,7 @@
 namespace SeatGeek\Sixpack\Session;
 
 use SeatGeek\Sixpack\Response;
+use SeatGeek\Sixpack\Session\Exception\InvalidForcedException;
 
 class Base
 {
@@ -86,13 +87,22 @@ class Base
         return false;
     }
 
+    /**
+     * Force the alternative
+     *
+     * @param string $experiment
+     * @param array $alternatives
+     * @throws \SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException
+     *   if an alternative is requested that doesn't exist
+     * @return array
+     */
     protected function forceAlternative($experiment, $alternatives)
     {
         $forceKey = "sixpack-force-" . $experiment;
         $forcedAlt = $_GET[$forceKey];
 
         if (!in_array($forcedAlt, $alternatives)) {
-            throw new \Exception("Invalid forced alternative");
+            throw new InvalidForcedAlternativeException([$forcedAlt, $alternatives]);
         }
 
         $mockJson = json_encode(array(
