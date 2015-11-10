@@ -7,14 +7,14 @@ use \Exception;
 /**
  * Used when a forced alternative is requested that doesn't exist
  */
-class InvalidForcedException extends Exception
+class InvalidForcedAlternativeException extends Exception
 {
     /**
      * The sprintf pattern for when an exception is thrown
      *
      * @var string
      */
-    protected $messageTemplate = "The alternative %s is not one of the possibilities (%s)";
+    protected $messageTemplate = "The alternative \"%s\" is not one of the possibilities (%s)";
 
     /**
      * Constructor
@@ -28,7 +28,7 @@ class InvalidForcedException extends Exception
         if ($message && is_array($message)) {
             $message += ['the alternative', ['the', 'possibilities']];
             $message[1] = implode(', ', $message[1]);
-            $message = sprintf($this->messageTemplate, $message);
+            $message = vsprintf($this->messageTemplate, $message);
         }
         return parent::__construct($message, $code, $previous);
     }

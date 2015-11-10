@@ -50,7 +50,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
             ->setMethods(['sendRequest'])
             ->getMock();
 
-        $base->participate('one', ['one']);
+        $base->participate('experiment', ['one']);
     }
 
     /**
@@ -68,7 +68,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
             ->setMethods(['sendRequest'])
             ->getMock();
 
-        $base->participate('one', ['$ne', 'two']);
+        $base->participate('experiment', ['$ne', 'two']);
     }
 
     /**
@@ -87,7 +87,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
             ->setMethods(['sendRequest'])
             ->getMock();
 
-        $base->participate('one', ['one', 'two'], $fraction);
+        $base->participate('experiment', ['one', 'two'], $fraction);
     }
 
     /**
@@ -103,5 +103,23 @@ class BaseTest extends PHPUnit_Framework_TestCase
             [1.01],
             [2]
         ];
+    }
+
+    /**
+     * Verify what happens with an unconfigured forced choice
+     *
+     * @expectedException \SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException
+     * @expectedExceptionMessage The alternative "not configured" is not one of the possibilities (one, two)
+     */
+    public function testParticipateInvalidForcedAlternative()
+    {
+        $_GET['sixpack-force-experiment'] = 'not configured';
+
+        $base = $this->getMockBuilder('SeatGeek\Sixpack\Session\Base')
+            ->disableOriginalConstructor()
+            ->setMethods(['sendRequest'])
+            ->getMock();
+
+        $base->participate('experiment', ['one', 'two']);
     }
 }

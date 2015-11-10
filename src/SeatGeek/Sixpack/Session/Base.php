@@ -3,7 +3,7 @@
 namespace SeatGeek\Sixpack\Session;
 
 use SeatGeek\Sixpack\Response;
-use SeatGeek\Sixpack\Session\Exception\InvalidForcedException;
+use SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException;
 use \InvalidArgumentException;
 
 class Base
@@ -100,7 +100,7 @@ class Base
     protected function forceAlternative($experiment, $alternatives)
     {
         $forceKey = "sixpack-force-" . $experiment;
-        $forcedAlt = $_GET[$forceKey];
+        $forcedAlt = isset($_GET[$forceKey]) ? $_GET[$forceKey] : null;
 
         if (!in_array($forcedAlt, $alternatives)) {
             throw new InvalidForcedAlternativeException([$forcedAlt, $alternatives]);
