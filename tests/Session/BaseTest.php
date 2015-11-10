@@ -122,4 +122,22 @@ class BaseTest extends PHPUnit_Framework_TestCase
 
         $base->participate('experiment', ['one', 'two']);
     }
+
+    /**
+     * Verify what happens with a bad experiment name
+     *
+     * @expectedException \SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException
+     * @expectedExceptionMessage The experiement name "experiments; the final frontier" is invalid
+     */
+    public function testParticipateInvalidExperimentName()
+    {
+        $_GET['sixpack-force-experiment'] = 'not configured';
+
+        $base = $this->getMockBuilder('SeatGeek\Sixpack\Session\Base')
+            ->disableOriginalConstructor()
+            ->setMethods(['nothing'])
+            ->getMock();
+
+        $base->participate('experiments; the final frontier', ['one', 'two']);
+    }
 }

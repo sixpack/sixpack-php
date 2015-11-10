@@ -3,6 +3,7 @@
 namespace SeatGeek\Sixpack\Session;
 
 use SeatGeek\Sixpack\Response;
+use SeatGeek\Sixpack\Session\Exception\InvalidExperimentNameException;
 use SeatGeek\Sixpack\Session\Exception\InvalidForcedAlternativeException;
 use \InvalidArgumentException;
 
@@ -209,7 +210,7 @@ class Base
     protected function sendRequest($endpoint, $params = array())
     {
         if (isset($params["experiment"]) && !preg_match('#^[a-z0-9][a-z0-9\-_ ]*$#i', $params["experiment"])) {
-            throw new \Exception("Invalid Experiment Name: " . $params["experiment"]);
+            throw new InvalidExperimentNameException($params["experiment"]);
         }
 
         $params = array_merge(array(
