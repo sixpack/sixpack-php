@@ -28,7 +28,7 @@ if ($alt == 'blue') {
 }
 ```
 
-Each session has a `client_id` associated with it that must be preserved across requests. The PHP client handles this automatically. If you'd wish to change that behavoir, you can do so like this:
+Each session has a `client_id` associated with it that must be preserved across requests. The PHP client handles this automatically. If you'd wish to change that behavior, you can do so like this:
 
 ```php
 require 'vendor/autoload.php';
