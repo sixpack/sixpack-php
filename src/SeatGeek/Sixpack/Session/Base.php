@@ -12,6 +12,7 @@ class Base
     // configuration
     protected $baseUrl = 'http://localhost:5000';
     protected $cookiePrefix = 'sixpack';
+    protected $cookieDomain = null;
     protected $timeout = 500;
 
     protected $clientId = null;
@@ -26,6 +27,9 @@ class Base
         }
         if (isset($options["timeout"])) {
             $this->timeout = $options["timeout"];
+        }
+        if (isset($options["cookieDomain"])) {
+            $this->cookieDomain = $options['cookieDomain'];
         }
         $this->setClientId(isset($options["clientId"]) ? $options["clientId"] : null);
     }
@@ -58,7 +62,8 @@ class Base
     protected function storeClientId($clientId)
     {
         $cookieName = $this->cookiePrefix . '_client_id';
-        setcookie($cookieName, $clientId, time() + (60 * 60 * 24 * 30 * 100), "/");
+        $cookieDomain = $this->cookieDomain;
+        setcookie($cookieName, $clientId, time() + (60 * 60 * 24 * 30 * 100), "/", $cookieDomain);
     }
 
     protected function generateClientId()
