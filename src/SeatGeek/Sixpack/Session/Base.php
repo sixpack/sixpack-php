@@ -104,7 +104,7 @@ class Base
         $forcedAlt = isset($_GET[$forceKey]) ? $_GET[$forceKey] : null;
 
         if (!in_array($forcedAlt, $alternatives)) {
-            throw new InvalidForcedAlternativeException([$forcedAlt, $alternatives]);
+            throw new InvalidForcedAlternativeException(array($forcedAlt, $alternatives));
         }
 
         $mockJson = json_encode(array(
