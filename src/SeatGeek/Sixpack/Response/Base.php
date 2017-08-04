@@ -28,6 +28,9 @@ class Base
 
     public function getClientId()
     {
-        return $this->response->client_id;
+        if (is_object($this->response)) {
+            return $this->response->client_id;
+        }
+        return null;
     }
 }
