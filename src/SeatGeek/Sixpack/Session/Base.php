@@ -83,7 +83,7 @@ class Base
     public function isForced($experiment)
     {
         $forceKey = "sixpack-force-" . $experiment;
-        if (in_array($forceKey, array_keys($_GET))) {
+        if (in_array($forceKey, array_keys($_GET), true)) {
             return true;
         }
         return false;
